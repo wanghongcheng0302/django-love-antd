@@ -1,6 +1,5 @@
 .idea
 db.sqlite3
-!
 **/*.log
 **/node_modules
 **/dist
