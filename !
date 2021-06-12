@@ -1,0 +1,24 @@
+git commit规范
+    - header：概要
+        - type：类型（必填）
+            - feat
+            - fix
+            - docs
+            - style
+            - refactor
+            - test
+            - chore
+        - scope：作用域（可选）
+            - 控制层\视图层\数据层
+            - 视项目定
+            - *全局
+        - subject：简短描述（必填）
+
+    - body：详细描述
+        - 第二行空行
+        - 说明代码变动动机以及效果
+
+    - foot
+        - 针对不兼容变动，以及处理方法
+        - 关闭issue
+
