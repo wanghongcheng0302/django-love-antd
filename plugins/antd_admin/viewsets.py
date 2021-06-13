@@ -12,7 +12,7 @@ User = get_user_model()
 
 class LoginViewSet(BaseModelViewSet):
     renderer_classes = (Renderer,)
-
+    
     def login(self, request, *args, **kwargs):
         data = request.data
         ser = LoginSerializer(data=data)

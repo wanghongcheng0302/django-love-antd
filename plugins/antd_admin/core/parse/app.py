@@ -1,13 +1,12 @@
 from . import BaseParser
 from django.apps import AppConfig
-from typing import Optional, List
+from typing import Optional, List, Union, Dict
 from .model import ModelParser
+from . import YamlOption
+from antd_admin.utils import search_field
 
 
 class AppParser(BaseParser):
-
-    def __init__(self, app: AppConfig):
-        self.app = app
 
     @property
     def name(self):
@@ -15,17 +14,25 @@ class AppParser(BaseParser):
 
     @property
     def label(self):
-        return self.label
+        return self.get_label()
 
     @property
     def models(self):
-        return self.models
+        return self.get_models()
 
     def get_name(self) -> str:
-        pass
+        return search_field(self._data, ['name'])
 
+    @YamlOption(target='label')
     def get_label(self) -> str:
-        pass
+        return search_field(self._data, ['verbose_name', 'name'])
 
-    def get_models(self) -> Optional[List[ModelParser]]:
-        pass
+    def get_models(self) -> dict:
+        return {model.__name__.lower(): ModelParser(data=model).data for model in self._data.models.values()}
+
+    def get_data(self) -> Optional[Union[List, Dict]]:
+        data = dict()
+        data['name'] = self.name
+        data['label'] = self.label
+        data['models'] = self.models
+        return data

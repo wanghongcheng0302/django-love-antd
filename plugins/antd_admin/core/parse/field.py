@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Union, Dict
 from django.apps import AppConfig
 from django.db.models import Model, Field
 
@@ -16,11 +16,6 @@ class RelatedField(object):
 
 
 class FieldParser(BaseParser):
-
-    def __init__(self, app: AppConfig, model: Model, field: Field):
-        self.app = app
-        self.model = model
-        self.field = Field
 
     @property
     def name(self):
@@ -82,6 +77,10 @@ class FieldParser(BaseParser):
     def help_text(self):
         return self.get_help_text()
 
+    @property
+    def is_primary_key(self):
+        return self.get_is_primary_key()
+
     def get_name(self) -> str:
         pass
 
@@ -126,3 +125,22 @@ class FieldParser(BaseParser):
 
     def get_meta(self) -> dict:
         pass
+
+    def get_data(self) -> Optional[Union[List, Dict]]:
+        data = dict()
+        data['name'] = self.name
+        data['meta'] = self.meta
+        data['label'] = self.label
+        data['max_length'] = self.max_length
+        data['to'] = self.to
+        data['is_foreignkey'] = self.is_foreignkey
+        data['is_many2many'] = self.is_many2many
+        data['editable'] = self.editable
+        data['choices'] = self.choices
+        data['type'] = self.type
+        data['is_primary_key'] = self.is_primary_key
+        data['blank'] = self.blank
+        data['help_text'] = self.help_text
+        data['unique'] = self.unique
+        data['meta'] = self.meta
+        return data

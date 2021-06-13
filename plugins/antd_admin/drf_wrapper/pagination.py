@@ -1,5 +1,5 @@
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
-from common.response_warp import JsonResponse, DataPackage
+from .response.response import DataPackage, JsonResponse
 
 
 class CustomPageNumberPagination(PageNumberPagination):
