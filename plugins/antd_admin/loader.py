@@ -1,7 +1,11 @@
 from django.apps import apps
 from .core.parse.site import SiteParser
-from .core.render.page import ListPageRenderer, UpdatePageRenderer, CreatePageRenderer, DetailPageRenderer
 from . import settings
+from antd_admin.templatetag.page import CommonFilesTemplateTag, ListTemplateTag, CreateTemplateTag, UpdateTemplateTag, \
+    DetailTemplateTag
+from antd_admin.templatetag.config import ConfigTemplateTag
+from antd_admin.templatetag.redux import ReduxTemplateTag
+from antd_admin.templatetag.service import ServiceTemplateTag
 import json
 
 
@@ -16,10 +20,18 @@ class Loader(object):
         print(data)
         print(json.dumps(data))
 
-        # 动态创建list page，使用元类
+        CommonFilesTemplateTag(data=data).write()
 
-        # 动态创建create page
+        ListTemplateTag(data=data).write()
 
-        #  动态创建update page
+        CreateTemplateTag(data=data).write()
 
-        # 动态创建detail page
+        UpdateTemplateTag(data=data).write()
+
+        DetailTemplateTag(data=data).write()
+
+        ConfigTemplateTag(data=data).write()
+
+        ServiceTemplateTag(data=data).write()
+
+        ReduxTemplateTag(data=data).write()

@@ -5,8 +5,9 @@ from antd_admin.utils import YamlOption
 
 class BaseParser(metaclass=ABCMeta):
 
-    def __init__(self, data):
+    def __init__(self, data, parent=None):
         self._data = data
+        self._parent = parent
 
     @property
     def data(self):

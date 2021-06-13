@@ -1,18 +1,17 @@
 from typing import Optional, List, Union, Dict
-from django.apps import AppConfig
-from django.db.models import Model, Field
+from django.db.models import Model, Field, ForeignKey, ManyToManyField
+from antd_admin.utils import search_field
 
 from . import BaseParser
 
 
 class RelatedField(object):
 
-    def __init__(self, app: AppConfig, model: Model):
-        self.app = app
+    def __init__(self, model):
         self.model = model
 
     def __str__(self):
-        return '({}, {})'.format(self.app.name, self.model.__name__)
+        return '({}, {})'.format(self.model._parent, self.model)
 
 
 class FieldParser(BaseParser):
@@ -24,10 +23,6 @@ class FieldParser(BaseParser):
     @property
     def label(self):
         return self.get_label()
-
-    @property
-    def meta(self):
-        return self.get_meta()
 
     @property
     def max_length(self):
@@ -82,54 +77,52 @@ class FieldParser(BaseParser):
         return self.get_is_primary_key()
 
     def get_name(self) -> str:
-        pass
+        return self._data.name
 
     def get_label(self) -> str:
-        pass
+        return search_field(self._data, ['verbose_name', 'name'])
 
     def get_max_length(self) -> Optional[int]:
-        pass
+        return self._data.max_length
 
-    def get_to(self) -> Optional[RelatedField]:
-        pass
+    def get_to(self):
+        if self._data.related_model:
+            return self._data.related_model.__name__
 
     def get_is_foreignkey(self) -> bool:
-        pass
+        return isinstance(self._data, ForeignKey)
 
     def get_is_many2many(self) -> bool:
-        pass
+        return isinstance(self._data, ManyToManyField)
 
     def get_validators(self) -> Optional[List]:
-        pass
+        return [item.__dict__ for item in self._data.validators]
 
     def get_editable(self) -> bool:
-        pass
+        return self._data.editable
 
     def get_choices(self) -> Optional[List]:
-        pass
+        return [{'value': item[0], 'label': str(item[1])} for item in
+                self._data.choices] if self._data.choices else None
 
     def get_type(self) -> str:
-        pass
+        return str(self._data.__class__.__name__)
 
     def get_is_primary_key(self) -> bool:
-        pass
+        return self._data.primary_key
 
     def get_blank(self) -> bool:
-        pass
+        return self._data.blank
 
     def get_help_text(self) -> Optional[str]:
-        pass
+        return self._data.help_text
 
     def get_unique(self) -> bool:
-        pass
-
-    def get_meta(self) -> dict:
-        pass
+        return getattr(self._data, '_unique', False)
 
     def get_data(self) -> Optional[Union[List, Dict]]:
         data = dict()
         data['name'] = self.name
-        data['meta'] = self.meta
         data['label'] = self.label
         data['max_length'] = self.max_length
         data['to'] = self.to
@@ -142,5 +135,4 @@ class FieldParser(BaseParser):
         data['blank'] = self.blank
         data['help_text'] = self.help_text
         data['unique'] = self.unique
-        data['meta'] = self.meta
         return data

@@ -34,7 +34,7 @@ class SiteParser(BaseParser):
         pass
 
     def get_apps(self) -> dict:
-        return {app.name: AppParser(data=app).data for app in self._data}
+        return {app.name: AppParser(data=app, parent=self).data for app in self._data}
 
     def get_data(self) -> Optional[Union[List, Dict]]:
         data = dict()

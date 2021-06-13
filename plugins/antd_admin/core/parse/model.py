@@ -1,7 +1,6 @@
 from . import BaseParser
 from typing import Optional, List, Dict, Union
 from .field import FieldParser
-from django.apps import AppConfig
 from django.db.models import Model, Field
 from . import YamlOption
 from ...utils import search_field
@@ -16,10 +15,6 @@ class ModelParser(BaseParser):
     @property
     def label(self):
         return self.get_label()
-
-    @property
-    def meta(self):
-        return self.get_meta()
 
     @property
     def list_display(self):
@@ -44,9 +39,6 @@ class ModelParser(BaseParser):
     @property
     def fields(self):
         return self.get_fields()
-
-    def get_meta(self) -> dict:
-        pass
 
     @YamlOption(target='name')
     def get_name(self) -> str:
@@ -85,13 +77,12 @@ class ModelParser(BaseParser):
             elif hasattr(item, 'field') and getattr(item, 'field'):
                 fields.append(getattr(item, 'field'))
 
-        return {field.name.lower(): FieldParser(data=field).data for field in fields}
+        return {field.name.lower(): FieldParser(data=field, parent=self).data for field in fields}
 
     def get_data(self) -> Optional[Union[List, Dict]]:
         data = dict()
         data['name'] = self.name
         data['label'] = self.label
-        data['meta'] = self.meta
         data['list_display'] = self.list_display
         data['search_fields'] = self.search_fields
         data['list_filter'] = self.list_filter

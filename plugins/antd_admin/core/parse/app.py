@@ -28,7 +28,7 @@ class AppParser(BaseParser):
         return search_field(self._data, ['verbose_name', 'name'])
 
     def get_models(self) -> dict:
-        return {model.__name__.lower(): ModelParser(data=model).data for model in self._data.models.values()}
+        return {model.__name__.lower(): ModelParser(data=model, parent=self).data for model in self._data.models.values()}
 
     def get_data(self) -> Optional[Union[List, Dict]]:
         data = dict()
