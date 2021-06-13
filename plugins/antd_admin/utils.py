@@ -1,5 +1,6 @@
 import importlib
 
+
 def import_class(name):
     """Import class from string
     e.g. `package.module.ClassToImport` returns the `ClasToImport` class"""
