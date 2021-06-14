@@ -3,7 +3,9 @@ from jinja2 import FileSystemLoader, Environment
 
 
 class Renderer:
-    dist = settings.ANTD_DIST_PATH
+    dist_path = settings.ANTD_DIST_PATH
+    tpl_path = settings.PRIVATE_TEMPLATE_PATH
+    resource_path = settings.PRIVATE_RESOURCE_PATH
 
     loader = FileSystemLoader(settings.PRIVATE_TEMPLATE_PATH)
     env = Environment(loader=loader)

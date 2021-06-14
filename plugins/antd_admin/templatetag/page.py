@@ -1,17 +1,31 @@
 import os
-
+import shutil
 from typing import Optional, List
 from . import BaseTemplateTag
 
 
 class CommonFilesTemplateTag(BaseTemplateTag):
 
+    def clear(self):
+        """
+        移除当前目录
+        :return:
+        """
+        shutil.rmtree(os.path.join(self.render.dist_path, 'ant-design-pro'))
+
     def write(self):
         """
         拷贝公共文件到指定目录
         :return:
         """
-        pass
+        for root, _dirs, _files in os.walk(self.render.resource_path):
+            for file in _files:
+                src = os.path.join(root, file)
+                dst = src.replace(self.render.resource_path, self.render.dist_path)
+                _dir = os.path.dirname(dst)
+                if not os.path.exists(_dir):
+                    os.makedirs(_dir)
+                shutil.copyfile(src, dst)
 
 
 class ListTemplateTag(BaseTemplateTag):

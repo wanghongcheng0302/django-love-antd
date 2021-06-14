@@ -35,4 +35,5 @@ class AppParser(BaseParser):
         data['name'] = self.name
         data['label'] = self.label
         data['models'] = self.models
+        data['_parent'] = self._parent
         return data

@@ -1,7 +1,7 @@
 from django.conf import settings
 import os
 
-ANTD_DIST_PATH = os.path.join(settings.BASE_DIR, 'dist')
+ANTD_DIST_PATH = os.path.join(settings.BASE_DIR, 'dist', 'ant-design-pro')
 
 ANTD_APP = []
 

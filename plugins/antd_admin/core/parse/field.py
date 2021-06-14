@@ -135,4 +135,5 @@ class FieldParser(BaseParser):
         data['blank'] = self.blank
         data['help_text'] = self.help_text
         data['unique'] = self.unique
+        data['_parent'] = self._parent
         return data

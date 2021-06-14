@@ -89,5 +89,6 @@ class ModelParser(BaseParser):
         data['list_editable'] = self.list_editable
         data['list_readonly'] = self.list_readonly
         data['fields'] = self.fields
+        data['_parent'] = self._parent
 
         return data
