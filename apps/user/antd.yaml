@@ -1,3 +1,8 @@
-label: 用户管理
-user:
-  label: 用户列表
+label: 用户中心
+models:
+  user:
+    label: 用户管理
+  role:
+    label: 角色管理
+  group:
+    label: 组管理

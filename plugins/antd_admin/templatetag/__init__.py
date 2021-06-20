@@ -2,7 +2,13 @@ from abc import ABCMeta, abstractmethod
 from antd_admin.core.render import Renderer
 
 
-class BaseTemplateTag(metaclass=ABCMeta):
+class _BaseTemplateTag(type):
+
+    def __new__(cls, *args, **kwargs):
+        return type(*args, **kwargs)
+
+
+class BaseTemplateTag(metaclass=_BaseTemplateTag):
     render = Renderer()
 
     def __init__(self, data):

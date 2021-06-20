@@ -1,6 +1,5 @@
 from casbin import persist
-
-from ..models import CasbinRule
+from .models import CasbinRule
 
 
 class Adapter(persist.Adapter):
@@ -63,7 +62,7 @@ class Adapter(persist.Adapter):
         This is part of the Auto-Save feature.
         """
         query_params = {'ptype': ptype}
-        if not(0 <= field_index <= 5):
+        if not (0 <= field_index <= 5):
             return False
         if not (1 <= field_index + len(field_values) <= 6):
             return False

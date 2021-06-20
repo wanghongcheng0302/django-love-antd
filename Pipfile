@@ -43,6 +43,10 @@ Pillow = "==8.2.0"
 PyYAML = "==5.4.1"
 casbin = "*"
 pyjwt = "*"
+git-pylint-commit-hook = "*"
+pylint = "*"
+rsa = "*"
+cryptography = "*"
 
 [dev-packages]
 

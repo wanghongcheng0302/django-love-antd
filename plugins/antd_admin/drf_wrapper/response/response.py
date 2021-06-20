@@ -2,38 +2,63 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-class DataPackage(object):
+class RC:
+    OK = 200
 
-    def __init__(self, fields=None, elements=None):
+
+class DataPackage:
+    """
+    response结构标准化
+    """
+
+    def __init__(self, fields=None, elements=None, rc=RC.OK):
         self.fields = fields or dict()
         self.elements = elements or list()
+        self.rc = rc
 
     def set_fields(self, fields: dict):
+        """
+        设置fields
+        :param fields:
+        :return:
+        """
         self.fields = fields
         return self
 
     def set_elements(self, elements: list):
+        """
+        设置列表
+        :param elements:
+        :return:
+        """
         self.elements = elements
         return self
 
     def set_field(self, key, value):
-        if not self.fields:
-            self.fields = dict()
+        """
+        设置单个字段
+        :param key:
+        :param value:
+        :return:
+        """
         self.fields[key] = value
         return self
 
     def dumps(self):
+        """
+        输出data
+        :return:
+        """
         ret = dict()
 
-        if hasattr(self, 'fields'):
-            ret['fields'] = self.fields
+        ret['fields'] = self.fields
+        ret['elements'] = self.elements
+        ret['rc'] = self.rc
 
-        if hasattr(self, 'elements'):
-            ret['elements'] = self.elements
         return ret
 
 
-class JsonResponse(object):
+class JsonResponse:
 
     def __new__(cls, status=status.HTTP_200_OK, data: DataPackage = None, headers: dict = None,
                 msg: str = None, err: str = None):

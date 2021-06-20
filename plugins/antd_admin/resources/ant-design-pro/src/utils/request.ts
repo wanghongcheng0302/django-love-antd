@@ -1,6 +1,6 @@
 /** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
-import { extend } from 'umi-request';
-import { notification } from 'antd';
+import {extend} from 'umi-request';
+import {notification} from 'antd';
 
 const codeMessage: Record<number, string> = {
   200: '服务器成功返回请求的数据。',
@@ -25,10 +25,25 @@ const codeMessage: Record<number, string> = {
  * @en-US Exception handler
  */
 const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
+  const {response, data} = error;
   if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
+    console.log('异常捕获', response.status, response.statusText)
+    if(response.status == 401 || response.status == 403){
+      // localStorage.removeItem('token');
+      // localStorage.removeItem('userInfo')
+    }
+
+    let errorText = codeMessage[response.status]
+    if (data) {
+      if (data.errors) {
+        errorText = data.errors
+      } else if (data.fields) {
+        errorText = JSON.stringify(data.fields)
+      }
+    } else {
+      errorText = codeMessage[response.status] || response.statusText;
+    }
+    const {status, url} = response;
 
     notification.error({
       message: `Request error ${status}: ${url}`,
@@ -50,6 +65,19 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   errorHandler, // default error handling
   credentials: 'include', // Does the default request bring cookies
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': localStorage.getItem('token')
+  }
 });
+
+// request.interceptors.response.use(async response => {
+//   const data = await response.clone().json()
+//   console.log('response', data)
+//   if (response.status == 400) {
+//     return response
+//   }
+//   return response;
+// });
 
 export default request;

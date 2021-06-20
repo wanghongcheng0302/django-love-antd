@@ -42,34 +42,61 @@ class ModelParser(BaseParser):
 
     @YamlOption(target='name')
     def get_name(self) -> str:
+        """
+        表名称
+        :return:
+        """
         return self._data.__name__.lower()
 
     @YamlOption(target='label')
     def get_label(self) -> str:
+        """
+        表中文名称
+        :return:
+        """
         _meta = getattr(self._data, '_meta').__dict__
         return search_field(_meta, ['verbose_name', 'name'])
 
     @YamlOption(target='list_display')
     def get_list_display(self) -> Optional[List]:
-        pass
+        """
+        列表显示字段
+        :return:
+        """
 
     @YamlOption(target='search_fields')
     def get_search_fields(self) -> Optional[List]:
-        pass
+        """
+        支持查询的字段
+        :return:
+        """
 
     @YamlOption(target='list_filter')
     def get_list_filter(self) -> Optional[List]:
-        pass
+        """
+        支持过滤的字段
+        :return:
+        """
 
     @YamlOption(target='list_editable')
     def get_list_editable(self) -> Optional[List]:
-        pass
+        """
+        可编辑的字段
+        :return:
+        """
 
     @YamlOption(target='list_readonly')
     def get_list_readonly(self) -> Optional[List]:
-        pass
+        """
+        只读字段
+        :return:
+        """
 
     def get_fields(self) -> dict:
+        """
+        所有字段
+        :return:
+        """
         fields = []
         for item in self._data.__dict__.values():
             if isinstance(item, Field):
@@ -80,6 +107,10 @@ class ModelParser(BaseParser):
         return {field.name.lower(): FieldParser(data=field, parent=self).data for field in fields}
 
     def get_data(self) -> Optional[Union[List, Dict]]:
+        """
+        整合表数据
+        :return:
+        """
         data = dict()
         data['name'] = self.name
         data['label'] = self.label

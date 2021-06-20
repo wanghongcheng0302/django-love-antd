@@ -51,7 +51,7 @@ def get_attr_by_chain(obj, attr_link: str):
     return cur_obj
 
 
-class YamlOption(object):
+class YamlOption:
 
     def __init__(self, target: str):
         self.target = target
@@ -97,10 +97,53 @@ class YamlOption(object):
             return None
         with open(config, 'r') as f:
             data = yaml.load(f.read())
-            if data and data.get(base_class.__name__.lower()):
-                data = data.get(base_class.__name__.lower())
-                return data.get(self.target)
+            model_name = base_class.__name__.lower()
+
+            # 配置文件且model项存在
+            if data and data.get('models'):
+                cur_model = data.get('models').get(model_name)
+                if not cur_model:
+                    return None
+                return cur_model.get(self.target)
 
     @option.register(Field)
     def _(self, element: Field):
         pass
+
+
+class Register:
+    """
+    返回注册的models/apps
+    """
+
+    def __call__(self, func, *args, **kwargs):
+        def wrapper(base_class, *args, **kwargs):
+            data = func(base_class, *args, **kwargs)
+            if isinstance(base_class._data, list):
+                config_path = os.path.join(settings.BASE_DIR, 'antd.yaml')
+                if not os.path.exists(config_path):
+                    return data
+
+                with open(config_path, 'r') as f:
+                    config = yaml.load(f.read())
+                    app_config = config.get('apps')
+                    if not config or not app_config or not isinstance(app_config, list):
+                        return data
+                    return {k: v for k, v in data.items() if k in config.get('apps')}
+            if isinstance(base_class._data, AppConfig):
+                config_path = os.path.join(base_class._data.path, 'antd.yaml')
+                if not os.path.exists(config_path):
+                    return data
+                with open(config_path, 'r') as f:
+                    config = yaml.load(f.read())
+                    if not config:
+                        return data
+                    else:
+                        model_config = config.get('models')
+                        if not model_config:
+                            return data
+                        else:
+                            return {k: v for k, v in data.items() if k in model_config.keys()}
+            return data
+
+        return wrapper

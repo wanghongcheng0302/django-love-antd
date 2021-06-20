@@ -31,77 +31,83 @@ class CommonFilesTemplateTag(BaseTemplateTag):
 class ListTemplateTag(BaseTemplateTag):
     tpl_path = os.path.join('frontend', 'pages', 'list.tpl')
 
-    @property
-    def search_input(self) -> Optional[str]:
-        """
-        搜索，根据keywords
-        :return:
-        """
-        return self.get_search_input()
-
-    @property
-    def filter_inputs(self) -> Optional[List[str]]:
-        """
-        过滤器，choices\many2many\bool
-        :return:
-        """
-        return self.get_filter_inputs()
-
-    @property
-    def content(self):
-        """
-        整页渲染结果
-        :return:
-        """
-        return self.get_content()
-
     def get_search_input(self):
-        pass
+        """
+        搜索组件
+        :return:
+        """
 
     def get_filter_inputs(self):
-        pass
+        """
+        过滤组件
+        :return:
+        """
 
     def get_content(self):
-        pass
+        """
+        渲染页面
+        :return:
+        """
+
+    def get_table(self):
+        """
+        表格
+        :return:
+        """
+
+    def get_pagination(self):
+        """
+        分页器
+        :return:
+        """
 
     def write(self):
-        pass
+        """
+        写入文件
+        :return:
+        """
 
 
 class CreateTemplateTag(BaseTemplateTag):
 
-    @property
-    def form(self):
-        return self.get_form()
-
     def get_form(self) -> str:
-        pass
+        """
+        表单
+        :return:
+        """
 
     def write(self):
-        pass
+        """
+        写入文件
+        :return:
+        """
 
 
 class UpdateTemplateTag(BaseTemplateTag):
 
-    @property
-    def form(self):
-        return self
-
     def get_form(self) -> str:
-        pass
+        """
+        表单
+        :return:
+        """
 
     def write(self):
-        pass
+        """
+        写入文件
+        :return:
+        """
 
 
 class DetailTemplateTag(BaseTemplateTag):
 
-    @property
-    def profile(self):
-        return self.get_profile()
-
     def get_profile(self) -> str:
-        pass
+        """
+        详情
+        :return:
+        """
 
     def write(self):
-        pass
+        """
+        写入文件
+        :return:
+        """

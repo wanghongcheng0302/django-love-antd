@@ -19,7 +19,6 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import type { ConnectState } from '@/models/connect';
 import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.svg';
-
 const noMatch = (
   <Result
     status={403}
@@ -89,9 +88,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       pathname: '/',
     },
   } = props;
-
   const menuDataRef = useRef<MenuDataItem[]>([]);
-
   useEffect(() => {
     if (dispatch) {
       dispatch({
@@ -108,8 +105,8 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         payload,
       });
     }
-  };
-  // get children authority
+  }; // get children authority
+
   const authorized = useMemo(
     () =>
       getMatchMenu(location.pathname || '/', menuDataRef.current).pop() || {
@@ -117,13 +114,10 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       },
     [location.pathname],
   );
-
-  const { formatMessage } = useIntl();
-
+  const {} = useIntl();
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
       {...props}
       {...settings}
       onCollapse={handleMenuCollapse}
@@ -136,12 +130,13 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         ) {
           return defaultDom;
         }
+
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: formatMessage({ id: 'menu.home' }),
+          breadcrumbName: '首页',
         },
         ...routers,
       ]}
@@ -157,6 +152,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         if (settings.footerRender || settings.footerRender === undefined) {
           return defaultFooterDom;
         }
+
         return null;
       }}
       menuDataRender={menuDataRender}

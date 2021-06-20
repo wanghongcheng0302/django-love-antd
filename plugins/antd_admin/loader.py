@@ -1,24 +1,35 @@
 from django.apps import apps
-from .core.parse.site import SiteParser
-from . import settings
-from antd_admin.templatetag.page import CommonFilesTemplateTag, ListTemplateTag, CreateTemplateTag, UpdateTemplateTag, \
-    DetailTemplateTag
+from antd_admin.templatetag.page import (
+    CommonFilesTemplateTag,
+    ListTemplateTag,
+    CreateTemplateTag,
+    UpdateTemplateTag,
+    DetailTemplateTag,
+)
 from antd_admin.templatetag.route import RouteTemplateTag
 from antd_admin.templatetag.redux import ReduxTemplateTag
 from antd_admin.templatetag.service import ServiceTemplateTag
-import json
+from .core.parse.site import SiteParser
+from . import settings
 
 
-class Loader(object):
+class Compiler:
+    """
+    代码生成器
+    """
 
     def __init__(self):
-        self.apps = [app for app in apps.get_app_configs() if app.name in settings.ANTD_APP]
+        self.apps = [
+            app for app in apps.get_app_configs() if app.name in settings.ANTD_APP
+        ]
 
     def compile(self):
-        # 解析数据
+        """
+        编译model，生成前后端代码
+        :return:
+        """
         data = SiteParser(data=self.apps).data
         print(data)
-        # print(json.dumps(data))
 
         CommonFilesTemplateTag(data=data).write()
 

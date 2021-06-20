@@ -2,12 +2,15 @@ from . import FormItem
 
 
 class Input(FormItem):
-    pass
+    def write(self):
+        pass
 
 
 class TextArea(FormItem):
-    pass
+    def write(self):
+        pass
 
 
 class Password(FormItem):
-    pass
+    def write(self):
+        pass

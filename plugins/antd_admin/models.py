@@ -1,7 +1,6 @@
 # Copied from: https://github.com/pycasbin/django-orm-adapter
 # as it lacks a setup.py file atm
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
 class CasbinRule(models.Model):
@@ -35,6 +34,3 @@ class CasbinRule(models.Model):
         if self.v5:
             text = text + ', ' + self.v5
         return text
-
-    def __repr__(self):
-        return '<CasbinRule {}: "{}">'.format(self.id, str(self))

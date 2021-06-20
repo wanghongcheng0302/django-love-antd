@@ -1,6 +1,6 @@
 from django.db import models
-from globals.models import BaseModel
 from user.models import User
+from globals.models import BaseModel
 
 
 class Order(BaseModel):

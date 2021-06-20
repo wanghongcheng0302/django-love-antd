@@ -9,10 +9,16 @@ class RouteTemplateTag(BaseTemplateTag):
 
     def write(self):
         content = self.get_routes(self.data['apps'])
-        with open('tmp.ts', 'w') as f:
+        output = os.path.join(self.render.dist_path, 'config', 'routes.ts')
+        with open(output, 'w') as f:
             f.write(content)
 
     def get_app_routes(self, app):
+        """
+        路由文件
+        :param app:
+        :return:
+        """
         template = self.render.env.get_template(self.app_routes_tpl)
         model_routes = [self.get_model_routes(model_config) for model_name, model_config in app['models'].items()]
 

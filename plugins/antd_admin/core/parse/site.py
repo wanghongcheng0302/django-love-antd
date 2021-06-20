@@ -1,4 +1,4 @@
-from . import BaseParser, YamlOption
+from . import BaseParser, YamlOption, Register
 from .app import AppParser
 from typing import Optional, List, Union, Dict
 
@@ -23,20 +23,38 @@ class SiteParser(BaseParser):
 
     @YamlOption(target='title')
     def get_title(self) -> str:
-        pass
+        """
+        网站标题
+        :return:
+        """
 
     @YamlOption(target='copyright')
     def get_copyright(self) -> str:
-        pass
+        """
+        版权说明
+        :return:
+        """
 
     @YamlOption(target='icon')
     def get_icon(self) -> str:
-        pass
+        """
+        icon
+        :return:
+        """
 
+    @Register()
     def get_apps(self) -> dict:
+        """
+        所有app
+        :return:
+        """
         return {app.name: AppParser(data=app, parent=self).data for app in self._data}
 
     def get_data(self) -> Optional[Union[List, Dict]]:
+        """
+        整合网站信息
+        :return:
+        """
         data = dict()
         data['title'] = self.title
         data['copyright'] = self.copyright

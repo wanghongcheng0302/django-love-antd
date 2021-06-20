@@ -9,6 +9,11 @@ class CustomPageNumberPagination(PageNumberPagination):
     page_query_param = "page"
 
     def get_paginated_response(self, data):
+        """
+        定义分页器返回
+        :param data:
+        :return:
+        """
         _d = DataPackage().set_elements(data)
         _d = _d.set_fields({
             'count': self.page.paginator.count,
@@ -26,6 +31,11 @@ class CustomLimitOffsetPagination(LimitOffsetPagination):
     max_limit = 50
 
     def get_paginated_response(self, data):
+        """
+        定义分页器返回
+        :param data:
+        :return:
+        """
         _d = DataPackage().set_elements(data)
         _d = _d.set_fields({
             'count': self.count,

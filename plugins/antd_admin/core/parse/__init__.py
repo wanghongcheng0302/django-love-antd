@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from typing import Optional, List, Dict, Union
-from antd_admin.utils import YamlOption
+from antd_admin.utils import YamlOption, Register
 
 
 class BaseParser(metaclass=ABCMeta):
