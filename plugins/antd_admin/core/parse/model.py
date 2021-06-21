@@ -40,6 +40,14 @@ class ModelParser(BaseParser):
     def fields(self):
         return self.get_fields()
 
+    @property
+    def classname(self):
+        return self.get_classname()
+
+    @property
+    def meta(self):
+        return self.get_meta()
+
     @YamlOption(target='name')
     def get_name(self) -> str:
         """
@@ -63,6 +71,13 @@ class ModelParser(BaseParser):
         列表显示字段
         :return:
         """
+
+    def get_classname(self):
+        """
+        类名
+        :return:
+        """
+        return self._data.__name__
 
     @YamlOption(target='search_fields')
     def get_search_fields(self) -> Optional[List]:
@@ -106,6 +121,9 @@ class ModelParser(BaseParser):
 
         return {field.name.lower(): FieldParser(data=field, parent=self).data for field in fields}
 
+    def get_meta(self):
+        return self._data
+
     def get_data(self) -> Optional[Union[List, Dict]]:
         """
         整合表数据
@@ -119,7 +137,9 @@ class ModelParser(BaseParser):
         data['list_filter'] = self.list_filter
         data['list_editable'] = self.list_editable
         data['list_readonly'] = self.list_readonly
+        data['classname'] = self.classname
         data['fields'] = self.fields
         data['_parent'] = self._parent
+        data['meta'] = self.meta
 
         return data

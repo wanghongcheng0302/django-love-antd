@@ -47,6 +47,7 @@ git-pylint-commit-hook = "*"
 pylint = "*"
 rsa = "*"
 cryptography = "*"
+django-filter = "*"
 
 [dev-packages]
 

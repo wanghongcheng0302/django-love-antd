@@ -29,7 +29,9 @@ class CommonFilesTemplateTag(BaseTemplateTag):
 
 
 class ListTemplateTag(BaseTemplateTag):
-    tpl_path = os.path.join('frontend', 'pages', 'list.tpl')
+    datad_tpl = os.path.join('frontend', 'pages', 'data.d.tpl')
+    service_tpl = os.path.join('frontend', 'pages', 'service.tpl')
+    list_tpl = os.path.join('frontend', 'pages', 'list.tpl')
 
     def get_search_input(self):
         """
@@ -61,11 +63,85 @@ class ListTemplateTag(BaseTemplateTag):
         :return:
         """
 
+    def get_datad(self, model):
+        """
+        datad
+        :return:
+        """
+        template = self.render.env.get_template(self.datad_tpl)
+        content = template.render(model=model, pageConfig=self.data.get('pageConfig'))
+        return content
+
+    def get_service(self, model):
+        """
+        service
+        :return:
+        """
+        template = self.render.env.get_template(self.service_tpl)
+        content = template.render(model=model, app_name=model['_parent']._data.name)
+        return content
+
+    def get_list(self, model):
+        template = self.render.env.get_template(self.list_tpl)
+        content = template.render(model=model, app_name=model['_parent']._data.name)
+        return content
+
     def write(self):
         """
         写入文件
         :return:
         """
+        self.write_datad()
+        self.write_service()
+        self.write_list()
+
+    def write_datad(self):
+        """
+        datad
+        :return:
+        """
+        apps = self.data.get('apps')
+        for app_name, app_info in apps.items():
+            models = app_info.get('models')
+            for model_name, model_info in models.items():
+                content = self.get_datad(model_info)
+                output = os.path.join(self.render.dist_path, 'src', 'pages',app_name,  model_name)
+                if not os.path.exists(output):
+                    os.makedirs(output)
+                with open(os.path.join(output, 'data.d.ts'), 'w') as f:
+                    f.write(content)
+
+    def write_service(self):
+        """
+        service
+        :return:
+        """
+        apps = self.data.get('apps')
+        for app_name, app_info in apps.items():
+            models = app_info.get('models')
+            for model_name, model_info in models.items():
+                content = self.get_service(model_info)
+                output = os.path.join(self.render.dist_path, 'src', 'pages', app_name, model_name)
+                if not os.path.exists(output):
+                    os.makedirs(output)
+                with open(os.path.join(output, 'service.ts'), 'w') as f:
+                    f.write(content)
+
+    def write_list(self):
+        """
+        list
+        :return:
+        """
+        apps = self.data.get('apps')
+        for app_name, app_info in apps.items():
+            models = app_info.get('models')
+            for model_name, model_info in models.items():
+                content = self.get_list(model_info)
+                output = os.path.join(self.render.dist_path, 'src', 'pages', app_name, model_name)
+                if not os.path.exists(output):
+                    os.makedirs(output)
+                with open(os.path.join(output, 'index.tsx'), 'w') as f:
+                    f.write(content)
 
 
 class CreateTemplateTag(BaseTemplateTag):

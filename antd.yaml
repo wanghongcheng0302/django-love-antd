@@ -3,3 +3,8 @@ copyright: 2021 Produced by Ant Group Experience Technology Department
 icon: https://preview.pro.ant.design/static/logo.f0355d39.svg
 apps:
   - user
+pageConfig:
+  totalParam: count
+  pageSizeParam: pageSize
+  pageNumParam: pageNum
+  searchParam: keyWords

@@ -6,6 +6,7 @@ from antd_admin.templatetag.page import (
     UpdateTemplateTag,
     DetailTemplateTag,
 )
+from antd_admin.templatetag.drf import SerializerTemplateTag, ViewSetTemplateTag, UrlTemplateTag
 from antd_admin.templatetag.route import RouteTemplateTag
 from antd_admin.templatetag.redux import ReduxTemplateTag
 from antd_admin.templatetag.service import ServiceTemplateTag
@@ -46,3 +47,9 @@ class Compiler:
         ServiceTemplateTag(data=data).write()
 
         ReduxTemplateTag(data=data).write()
+
+        SerializerTemplateTag(data=data).write()
+
+        ViewSetTemplateTag(data=data).write()
+
+        UrlTemplateTag(data=data).write()

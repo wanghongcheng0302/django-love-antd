@@ -27,7 +27,7 @@
         {
             name: '{[ model.label ]}列表',
             path: '/antd/{[ model._parent.name ]}/{[ model.name ]}/list',
-{#            component: './{[ model._parent.name ]}/{[ model.name ]}/list.tsx',#}
+            component: './{[ model._parent.name ]}/{[ model.name ]}/index.tsx',
         },
     ]
 },

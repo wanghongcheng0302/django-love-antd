@@ -6,3 +6,4 @@ db.sqlite3
 **/build
 **/__pycache__
 conf/*.pem
+Pipfile.lock

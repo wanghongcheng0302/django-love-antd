@@ -42,6 +42,18 @@ class SiteParser(BaseParser):
         :return:
         """
 
+    @YamlOption(target='pageConfig')
+    def get_pageconfig(self):
+        """
+        分页参数
+        :return:
+        """
+        page_config = dict()
+        page_config['totalParam'] = 'count'
+        page_config['pageSizeParam'] = 'pageSize'
+        page_config['pageNumParam'] = 'pageNum'
+        page_config['searchParam'] = 'keyWords'
+
     @Register()
     def get_apps(self) -> dict:
         """
