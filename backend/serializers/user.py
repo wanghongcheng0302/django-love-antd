@@ -3,14 +3,6 @@ from user.models import User
 
 
 class UserListSerializer(serializers.ModelSerializer):
-    roles = serializers.SerializerMethodField()
-
-    def get_roles(self, obj):
-        return [str(item) for item in obj.roles.filter()]
-    users = serializers.SerializerMethodField()
-
-    def get_users(self, obj):
-        return [str(item) for item in obj.users.filter()]
     
 
     class Meta:

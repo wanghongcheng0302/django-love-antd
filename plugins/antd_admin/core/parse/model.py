@@ -113,12 +113,20 @@ class ModelParser(BaseParser):
         :return:
         """
         fields = []
-        for item in self._data.__dict__.values():
-            if isinstance(item, Field):
-                fields.append(item)
-            elif hasattr(item, 'field') and getattr(item, 'field'):
-                fields.append(getattr(item, 'field'))
-
+        for field_name in dir(self._data):
+            try:
+                field = getattr(self._data, field_name).field
+                if not isinstance(field, Field):
+                    continue
+                if field in fields:
+                    continue
+                if field.model is not self._data and field.remote_field:
+                    continue
+                if self.name == 'role':
+                    print(field)
+                    fields.append(field)
+            except AttributeError:
+                pass
         return {field.name.lower(): FieldParser(data=field, parent=self).data for field in fields}
 
     def get_meta(self):

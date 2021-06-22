@@ -6,3 +6,5 @@ models:
     label: 角色管理
   group:
     label: 组管理
+  permission:
+    label: 权限组

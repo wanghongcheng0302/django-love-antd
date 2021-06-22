@@ -5,6 +5,7 @@ from {[ app_name ]}.models import {[ model.classname ]}
 class {[ model.classname ]}ListSerializer(serializers.ModelSerializer):
     {% for field in model.fields.values() -%}
     {% if field.type == 'ManyToManyField' -%}
+        # {[ field ]}
     {[ field.name ]} = serializers.SerializerMethodField()
 
     def get_{[ field.name ]}(self, obj):
