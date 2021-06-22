@@ -24,3 +24,4 @@ class Renderer:
     env.filters['django_convert_typescript'] = django_convert_typescript
     env.filters['django_to_protable'] = django_to_protable
     env.filters['capitalize'] = capitalize
+    env.add_extension('jinja2.ext.loopcontrols')

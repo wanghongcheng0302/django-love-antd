@@ -122,9 +122,7 @@ class ModelParser(BaseParser):
                     continue
                 if field.model is not self._data and field.remote_field:
                     continue
-                if self.name == 'role':
-                    print(field)
-                    fields.append(field)
+                fields.append(field)
             except AttributeError:
                 pass
         return {field.name.lower(): FieldParser(data=field, parent=self).data for field in fields}

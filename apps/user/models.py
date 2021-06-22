@@ -37,7 +37,7 @@ class User(BaseModel):
         ),
         (2, "其他"),
     )
-    openid = models.CharField(verbose_name="openid", max_length=255, unique=True)
+    openid = models.CharField(verbose_name="openid", max_length=255, unique=True, null=True, blank=True)
     roles = models.ManyToManyField(verbose_name="角色集", to=Role, blank=True)
     nickname = models.CharField(verbose_name="昵称", max_length=50, unique=True)
     birthday = models.DateField(verbose_name="生日", blank=True, null=True)

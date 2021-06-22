@@ -129,7 +129,7 @@ columns = [
               key="primary"
               onClick={() => {
                 history.push({
-                  pathname: '/backend/{[ app_name ]}/{[ name ]}/create',
+                  pathname: '/antd/{[ app_name ]}/{[ model.name ]}/create',
                 });
               }}
             >

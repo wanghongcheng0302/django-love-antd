@@ -10,5 +10,8 @@ class DjangoTestCase(unittest.TestCase):
 
     def test_(self):
         from antd_admin.loader import Compiler
+        # from user.models import Role
+        # print(Role.__dict__)
+        # return
         loader = Compiler()
         loader.compile()

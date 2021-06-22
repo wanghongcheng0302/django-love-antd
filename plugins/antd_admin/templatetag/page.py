@@ -146,44 +146,87 @@ class ListTemplateTag(BaseTemplateTag):
 
 class CreateTemplateTag(BaseTemplateTag):
 
-    def get_form(self) -> str:
+    create_tpl = os.path.join('frontend', 'pages', 'create.tpl')
+
+    def get_form(self, model) -> str:
         """
         表单
         :return:
         """
+        template = self.render.env.get_template(self.create_tpl)
+        content = template.render(model=model, app_name=model['_parent']._data.name)
+        return content
 
     def write(self):
         """
         写入文件
         :return:
         """
+        apps = self.data.get('apps')
+        for app_name, app_info in apps.items():
+            models = app_info.get('models')
+            for model_name, model_info in models.items():
+                content = self.get_form(model_info)
+                output = os.path.join(self.render.dist_path, 'src', 'pages', app_name, model_name)
+                if not os.path.exists(output):
+                    os.makedirs(output)
+                with open(os.path.join(output, 'create.tsx'), 'w') as f:
+                    f.write(content)
 
 
 class UpdateTemplateTag(BaseTemplateTag):
+    update_tpl = os.path.join('frontend', 'pages', 'update.tpl')
 
-    def get_form(self) -> str:
+    def get_form(self, model) -> str:
         """
         表单
         :return:
         """
+        template = self.render.env.get_template(self.update_tpl)
+        content = template.render(model=model, app_name=model['_parent']._data.name)
+        return content
 
     def write(self):
         """
         写入文件
         :return:
         """
+        apps = self.data.get('apps')
+        for app_name, app_info in apps.items():
+            models = app_info.get('models')
+            for model_name, model_info in models.items():
+                content = self.get_form(model_info)
+                output = os.path.join(self.render.dist_path, 'src', 'pages', app_name, model_name)
+                if not os.path.exists(output):
+                    os.makedirs(output)
+                with open(os.path.join(output, 'update.tsx'), 'w') as f:
+                    f.write(content)
 
 
 class DetailTemplateTag(BaseTemplateTag):
+    detail_tpl = os.path.join('frontend', 'pages', 'detail.tpl')
 
-    def get_profile(self) -> str:
+    def get_profile(self, model) -> str:
         """
         详情
         :return:
         """
+        template = self.render.env.get_template(self.detail_tpl)
+        content = template.render(model=model, app_name=model['_parent']._data.name)
+        return content
 
     def write(self):
         """
         写入文件
         :return:
         """
+        apps = self.data.get('apps')
+        for app_name, app_info in apps.items():
+            models = app_info.get('models')
+            for model_name, model_info in models.items():
+                content = self.get_profile(model_info)
+                output = os.path.join(self.render.dist_path, 'src', 'pages', app_name, model_name)
+                if not os.path.exists(output):
+                    os.makedirs(output)
+                with open(os.path.join(output, 'detail.tsx'), 'w') as f:
+                    f.write(content)

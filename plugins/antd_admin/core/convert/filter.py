@@ -40,6 +40,7 @@ def django_convert_typescript(value):
         return 'number'
     if value == 'ManyToManyField':
         return 'Array<number>'
+    return 'string'
 
 
 def enable_filter(value, fields):

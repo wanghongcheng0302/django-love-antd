@@ -5,7 +5,7 @@ from jwt.exceptions import ExpiredSignatureError, DecodeError
 from rest_framework import exceptions
 
 
-def make_jwt(data: dict, exp: int = 3600):
+def make_jwt(data: dict, exp: int = 360000):
     payload = {
         'exp': datetime.datetime.now() + datetime.timedelta(seconds=exp),
         'iat': datetime.datetime.now(),

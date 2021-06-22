@@ -76,6 +76,18 @@ class FieldParser(BaseParser):
     def is_primary_key(self):
         return self.get_is_primary_key()
 
+    @property
+    def auto_now(self):
+        return self.get_auto_now()
+
+    @property
+    def auto_now_add(self):
+        return self.get_auto_now_add()
+
+    @property
+    def auto_created(self):
+        return self.get_auto_created()
+
     def get_name(self) -> str:
         """
         字段名
@@ -103,7 +115,7 @@ class FieldParser(BaseParser):
         :return:
         """
         if self._data.related_model:
-            return self._data.related_model.__name__
+            return self._data.related_model
 
     def get_is_foreignkey(self) -> bool:
         """
@@ -176,6 +188,27 @@ class FieldParser(BaseParser):
         """
         return getattr(self._data, '_unique', False)
 
+    def get_auto_now(self) -> bool:
+        """
+        更新时更新
+        :return:
+        """
+        return getattr(self._data, 'auto_now', False)
+
+    def get_auto_now_add(self) -> bool:
+        """
+        创建时更新
+        :return:
+        """
+        return getattr(self._data, 'auto_now_add', False)
+
+    def get_auto_created(self) -> bool:
+        """
+        自动创建
+        :return:
+        """
+        return getattr(self._data, 'auto_created', False)
+
     def get_data(self) -> Optional[Union[List, Dict]]:
         """
         整个字段信息
@@ -196,4 +229,7 @@ class FieldParser(BaseParser):
         data['help_text'] = self.help_text
         data['unique'] = self.unique
         data['_parent'] = self._parent
+        data['auto_created'] = self.auto_created
+        data['auto_now_add'] = self.auto_now_add
+        data['auto_now'] = self.auto_now
         return data
