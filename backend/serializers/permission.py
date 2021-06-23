@@ -4,6 +4,10 @@ from user.models import Permission
 
 class PermissionListSerializer(serializers.ModelSerializer):
     
+    parent = serializers.SerializerMethodField()
+    def get_parent(self, obj):
+        return str(obj.parent) if  obj.parent else ''
+    
 
     obj_ = serializers.SerializerMethodField()
     def get_obj_(self, obj):

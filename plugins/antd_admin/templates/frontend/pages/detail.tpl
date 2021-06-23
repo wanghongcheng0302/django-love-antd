@@ -1,5 +1,5 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd';
+import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip, message } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import type { FC } from 'react';
@@ -9,17 +9,21 @@ import styles from './style.less';
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+import {history} from 'umi';
 const { TextArea } = Input;
 interface BasicFormProps {
   submitting: boolean;
   dispatch: Dispatch;
 }
 
-const BasicForm: FC<BasicFormProps> = (props) => {
-  const { submitting } = props;
-  const [form] = Form.useForm();
-  const [showPublicUsers, setShowPublicUsers] = React.useState(false);
-  const formItemLayout = {
+{%- for field in model.fields.values() %}
+    {%- if field.type in ["ForeignKey", "ManyToManyField"] %}
+        import { query{[ field.to.__name__ | capitalize ]} } from '@/pages/{[ field.to._meta.app_config.name ]}/{[ field.to.__name__.lower() ]}/service.ts'
+    {%- endif %}
+{%- endfor %}
+import { create{[ model.name | capitalize ]} } from './service'
+
+const formItemLayout = {
     labelCol: {
       xs: {
         span: 24,
@@ -53,122 +57,185 @@ const BasicForm: FC<BasicFormProps> = (props) => {
     },
   };
 
-  const onFinish = (values: Record<string, any>) => {
-    const { dispatch } = props;
-    dispatch({
-      type: 'formAndbasicForm/submitRegularForm',
-      payload: values,
-    });
-  };
+class BasicForm extends React.Component<BasicFormProps> {
+  constructor(props) {
+    super(props);
+  this.state = {
+    {%- for field in model.fields.values() %}
+      {%- if field.type in ["ForeignKey", "ManyToManyField"] %}
+          {[ field.name ]}Options: [],
+      {% endif %}
+    {%- endfor %}
+    }
+  }
 
-  const onFinishFailed = (errorInfo: any) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
-  };
+  componentDidMount() {
+    {%- for field in model.fields.values() %}
+      {%- if field.type in ["ForeignKey", "ManyToManyField"] %}
+          query{[ field.to.__name__ | capitalize ]}().then(resp=>{
+            this.setState({
+                {[ field.name ]}Options: resp.elements
+            });
+          })
+      {% endif %}
+    {%- endfor %}
+  }
 
-  const onValuesChange = (changedValues: Record<string, any>) => {
-    const { publicType } = changedValues;
-    if (publicType) setShowPublicUsers(publicType === '2');
-  };
+onFinish(values){
+    console.log('-----> 表单', values)
+    create{[ model.name | capitalize ]}(values).then(resp=>{
+        if(resp.rc === 201){
+            message.success('创建成功');
+            setTimeout(()=>{
+              history.push({
+              pathname: '/antd/{[ app_name ]}/{[ model.name ]}/list',
+              });
+            }, 1000)
+        }
+    })
+  }
 
-  return (
+    render(){
+   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <Card bordered={false}>
         <Form
-          hideRequiredMark
           style={{
             marginTop: 8,
           }}
-          form={form}
-          name="basic"
-          initialValues={{
-            public: '1',
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          onValuesChange={onValuesChange}
+                  onFinish={this.onFinish}
         >
-
-        {% for field in model.fields.values() %}
-        {# input #}
-        {% if field.choices %}
+        {%- for field in model.fields.values() %}
+            {%- if field.auto_now or field.auto_now_add or field.auto_created or field.is_primary_key %}
+                {% continue %}
+            {%- endif %}
+        {%- if field.choices -%}
         <FormItem
             {...formItemLayout}
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
-            rules={
-            [{ required: true }]
-            }
-          >
+            rules={ [{
+            {%- if not field.blank -%}
+                required: true,
+            {%- endif -%}
+                type: "{[ field.type | django_convert_typescript ]}",
+            {%- if field.max_length -%}
+                max: {[ field.max_length ]}
+            {%- endif -%}}] }
+            >
             <Radio.Group>
-            {% for choice in field.choices %}
+            {%- for choice in field.choices %}
                 <Radio value={ {[ choice.value ]} }>{[ choice.label ]}</Radio>
-            {% endfor %}
-
-        </Radio.Group>
+            {%- endfor %}
+            </Radio.Group>
           </FormItem>
-
-        {% elif field.type in ['CharField', 'EmailField'] %}
+        {%- elif field.type in ['CharField', 'EmailField'] -%}
         <FormItem
             {...formItemLayout}
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
-            rules={
-            [{ required: true }]
-            }
-          >
+            rules={ [{
+            {%- if not field.blank -%}
+                required: true,
+            {%- endif -%}
+                type: "{[ field.type | django_convert_typescript ]}",
+            {%- if field.max_length -%}
+                max: {[ field.max_length ]}
+            {%- endif -%}}] }
+            >
             <Input placeholder="请输入{[ field.label ]}" />
           </FormItem>
-
-        {% elif not field.primary_key and field.type in ['BigAutoField', 'BigIntegerField', 'DecimalField', 'FloatField', 'IntegerField', 'PositiveBigIntegerField', 'PositiveIntegerField', 'PositiveSmallIntegerField', 'SmallIntegerField'] %}
+        {%- elif field.type in ['BigAutoField', 'BigIntegerField', 'DecimalField', 'FloatField', 'IntegerField', 'PositiveBigIntegerField', 'PositiveIntegerField', 'PositiveSmallIntegerField', 'SmallIntegerField'] -%}
          <FormItem
             {...formItemLayout}
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
-            rules={
-            [{ required: true }]
-            }
-          >
+            rules={ [{
+            {%- if not field.blank -%}
+                required: true,
+            {%- endif -%}
+                type: "{[ field.type | django_convert_typescript ]}",
+            {%- if field.max_length -%}
+                max: {[ field.max_length ]}
+            {%- endif -%}}] }
+            >
             <InputNumber />
           </FormItem>
-
-        {% elif field.type in ['DateField', 'DateTimeField', 'timefield',] %}
+        {%- elif field.type in ['DateField', 'DateTimeField', 'timefield',] -%}
         <FormItem
             {...formItemLayout}
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
-            rules={
-            [{ required: true }]
-            }
-          >
+            rules={ [{
+            {%- if not field.blank -%}
+                required: true,
+            {%- endif -%}
+                type: "{[ field.type | django_convert_typescript ]}",
+            {%- if field.max_length -%}
+                max: {[ field.max_length ]}
+            {%- endif -%}}] }
+            >
             <DatePicker  />
           </FormItem>
-
-
-        {% elif field.type in ['TextField', ] %}
+        {%- elif field.type in ['TextField', ] -%}
         <FormItem
             {...formItemLayout}
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
-            rules={
-            [{ required: true }]
-            }
-          >
+            rules={ [{
+            {%- if not field.blank -%}
+                required: true,
+            {%- endif -%}
+                type: "{[ field.type | django_convert_typescript ]}",
+            {%- if field.max_length -%}
+                max: {[ field.max_length ]}
+            {%- endif -%}}] }
+            >
             <TextArea showCount  />
           </FormItem>
-
-        {% elif field.type in ['ForeignKey', ] %}
-        {% elif field.type in ['ManyToManyField', ] %}
-        {% endif %}
-
+        {%- elif field.type in ['ForeignKey', ] -%}
+           <FormItem
+            {...formItemLayout}
+            label={"{[ field.label ]}"}
+            name="{[ field.name ]}"
+            rules={ [{
+            {%- if not field.blank -%}
+                required: true,
+            {%- endif -%}
+                type: "{[ field.type | django_convert_typescript ]}",
+            {%- if field.max_length -%}
+                max: {[ field.max_length ]}
+            {%- endif -%}}] }
+            >
+            <Select style={{ width: 120 }} >
+                {
+                    this.state.{[ field.name ]}Options.map(item => {
+                        return <Option key={item.id} value={item.id}>{ item.obj_ }</Option>
+                    })
+                }
+            </Select>
+          </FormItem>
+        {%- elif field.type in ['ManyToManyField', ] %}
+            <FormItem
+            {...formItemLayout}
+            label={"{[ field.label ]}"}
+            name="{[ field.name ]}"
+          >
+            <Select style={{ width: 120 }} mode="multiple" >
+                {
+                    this.state.{[ field.name ]}Options.map(item => {
+                        return <Option key={item.id} value={item.id}>{ item.obj_ }</Option>
+                    })
+                }
+            </Select>
+          </FormItem>
+        {%- endif %}
         {% endfor %}
           <FormItem
             {...submitFormLayout}
-            style={{
-              marginTop: 32,
-            }}
+            style={{ marginTop: 32 }}
           >
-            <Button type="primary" htmlType="submit" loading={submitting}>
+            <Button type="primary" htmlType="submit" loading={this.submitting}>
               提交
             </Button>
             <Button
@@ -183,6 +250,9 @@ const BasicForm: FC<BasicFormProps> = (props) => {
       </Card>
     </PageContainer>
   );
+    }
+
+
 };
 
 export default connect(

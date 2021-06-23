@@ -22,10 +22,12 @@ class GroupViewSet(ModelViewSet):
         return super(GroupViewSet, self).list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = GroupUpdateSerializer
+        return super(GroupViewSet, self).update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = GroupCreateSerializer
+        return super(GroupViewSet, self).create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         return super(GroupViewSet, self).destroy(request, *args, **kwargs)

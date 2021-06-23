@@ -1,5 +1,5 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd';
+import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip, message } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect, FormattedMessage, formatMessage } from 'umi';
 import type { FC } from 'react';
@@ -9,6 +9,7 @@ import styles from './style.less';
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+import {history} from 'umi';
 const { TextArea } = Input;
 interface BasicFormProps {
   submitting: boolean;
@@ -83,7 +84,14 @@ class BasicForm extends React.Component<BasicFormProps> {
 onFinish(values){
     console.log('-----> 表单', values)
     create{[ model.name | capitalize ]}(values).then(resp=>{
-
+        if(resp.rc === 201){
+            message.success('创建成功');
+            setTimeout(()=>{
+              history.push({
+              pathname: '/antd/{[ app_name ]}/{[ model.name ]}/list',
+              });
+            }, 1000)
+        }
     })
   }
 
@@ -107,7 +115,7 @@ onFinish(values){
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
             rules={ [{
-            {%- if field.blank -%}
+            {%- if not field.blank -%}
                 required: true,
             {%- endif -%}
                 type: "{[ field.type | django_convert_typescript ]}",
@@ -127,7 +135,7 @@ onFinish(values){
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
             rules={ [{
-            {%- if field.blank -%}
+            {%- if not field.blank -%}
                 required: true,
             {%- endif -%}
                 type: "{[ field.type | django_convert_typescript ]}",
@@ -143,7 +151,7 @@ onFinish(values){
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
             rules={ [{
-            {%- if field.blank -%}
+            {%- if not field.blank -%}
                 required: true,
             {%- endif -%}
                 type: "{[ field.type | django_convert_typescript ]}",
@@ -159,7 +167,7 @@ onFinish(values){
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
             rules={ [{
-            {%- if field.blank -%}
+            {%- if not field.blank -%}
                 required: true,
             {%- endif -%}
                 type: "{[ field.type | django_convert_typescript ]}",
@@ -175,7 +183,7 @@ onFinish(values){
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
             rules={ [{
-            {%- if field.blank -%}
+            {%- if not field.blank -%}
                 required: true,
             {%- endif -%}
                 type: "{[ field.type | django_convert_typescript ]}",
@@ -191,7 +199,7 @@ onFinish(values){
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
             rules={ [{
-            {%- if field.blank -%}
+            {%- if not field.blank -%}
                 required: true,
             {%- endif -%}
                 type: "{[ field.type | django_convert_typescript ]}",
@@ -212,15 +220,8 @@ onFinish(values){
             {...formItemLayout}
             label={"{[ field.label ]}"}
             name="{[ field.name ]}"
-            rules={ [{
-            {%- if field.blank -%}
-                required: true,
-            {%- endif -%}
-            {%- if field.max_length -%}
-                max: {[ field.max_length ]}
-            {%- endif -%}}] }
           >
-            <Select style={{ width: 120 }} >
+            <Select style={{ width: 120 }} mode="multiple" >
                 {
                     this.state.{[ field.name ]}Options.map(item => {
                         return <Option key={item.id} value={item.id}>{ item.obj_ }</Option>

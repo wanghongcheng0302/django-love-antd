@@ -22,10 +22,12 @@ class PermissionViewSet(ModelViewSet):
         return super(PermissionViewSet, self).list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = PermissionUpdateSerializer
+        return super(PermissionViewSet, self).update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = PermissionCreateSerializer
+        return super(PermissionViewSet, self).create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         return super(PermissionViewSet, self).destroy(request, *args, **kwargs)

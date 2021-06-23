@@ -10,6 +10,10 @@ class {[ model.classname ]}ListSerializer(serializers.ModelSerializer):
 
     def get_{[ field.name ]}(self, obj):
         return [str(item) for item in obj.{[ field.name ]}.filter()]
+        {% elif field.type == 'ForeignKey' %}
+    {[ field.name ]} = serializers.SerializerMethodField()
+    def get_{[ field.name ]}(self, obj):
+        return str(obj.{[ field.name ]}) if  obj.{[ field.name ]} else ''
     {% endif %}
     {%- endfor %}
 

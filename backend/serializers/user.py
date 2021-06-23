@@ -3,12 +3,12 @@ from user.models import User
 
 
 class UserListSerializer(serializers.ModelSerializer):
-    # {'name': 'roles', 'label': '角色集', 'max_length': None, 'to': <class 'user.models.Role'>, 'is_foreignkey': False, 'is_many2many': True, 'editable': True, 'choices': None, 'type': 'ManyToManyField', 'is_primary_key': False, 'blank': True, 'help_text': '', 'unique': False, '_parent': <antd_admin.core.parse.model.ModelParser object at 0x103b8c5b0>, 'auto_created': False, 'auto_now_add': False, 'auto_now': False}
+    # {'name': 'roles', 'label': '角色集', 'max_length': None, 'to': <class 'user.models.Role'>, 'is_foreignkey': False, 'is_many2many': True, 'editable': True, 'choices': None, 'type': 'ManyToManyField', 'is_primary_key': False, 'blank': True, 'help_text': '', 'unique': False, '_parent': <antd_admin.core.parse.model.ModelParser object at 0x10caf65b0>, 'auto_created': False, 'auto_now_add': False, 'auto_now': False}
     roles = serializers.SerializerMethodField()
 
     def get_roles(self, obj):
         return [str(item) for item in obj.roles.filter()]
-    
+        
 
     obj_ = serializers.SerializerMethodField()
     def get_obj_(self, obj):

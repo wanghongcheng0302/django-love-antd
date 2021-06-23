@@ -15,7 +15,7 @@ class TableList extends React.Component {
 
 handelDetail(record) {
     history.push({
-      pathname: '/backend/{[ app_name ]}/{[ model.name ]}/detail',
+      pathname: '/antd/{[ app_name ]}/{[ model.name ]}/detail',
       query: {
         id: record.id,
       },
@@ -24,7 +24,7 @@ handelDetail(record) {
 
   handelUpdate(record) {
       history.push({
-      pathname: '/backend/{[ app_name ]}/{[ model.name ]}/update',
+      pathname: '/antd/{[ app_name ]}/{[ model.name ]}/update',
       query: {
         id: record.id,
       },

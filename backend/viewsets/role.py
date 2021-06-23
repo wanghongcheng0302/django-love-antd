@@ -22,9 +22,11 @@ class RoleViewSet(ModelViewSet):
         return super(RoleViewSet, self).list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = RoleUpdateSerializer
+        return super(RoleViewSet, self).update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
+        self.serializer_class = RoleCreateSerializer
         return super(RoleViewSet, self).create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):

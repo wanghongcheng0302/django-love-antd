@@ -22,10 +22,12 @@ class UserViewSet(ModelViewSet):
         return super(UserViewSet, self).list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = UserUpdateSerializer
+        return super(UserViewSet, self).update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = UserCreateSerializer
+        return super(UserViewSet, self).create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         return super(UserViewSet, self).destroy(request, *args, **kwargs)

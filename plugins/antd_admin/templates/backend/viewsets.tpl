@@ -26,10 +26,12 @@ class {[ model.classname ]}ViewSet(ModelViewSet):
         return super({[ model.classname ]}ViewSet, self).list(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = {[ model.classname ]}UpdateSerializer
+        return super({[ model.classname ]}ViewSet, self).update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = {[ model.classname ]}CreateSerializer
+        return super({[ model.classname ]}ViewSet, self).create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         return super({[ model.classname ]}ViewSet, self).destroy(request, *args, **kwargs)
