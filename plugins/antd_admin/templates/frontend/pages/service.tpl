@@ -9,3 +9,11 @@ export async function query{[ model.name | capitalize ]}(params?: TableListParam
   });
 }
 
+// {[ model.label ]}创建
+export async function create{[ model.name | capitalize ]}(data) {
+  return request('/api/backend/{[ app_name ]}/{[ model.name ]}/', {
+    method: 'POST',
+    data,
+  });
+}
+

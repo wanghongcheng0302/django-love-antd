@@ -1,6 +1,7 @@
 import os
 import django
 import unittest
+from django.apps import apps
 
 
 class DjangoTestCase(unittest.TestCase):
@@ -10,7 +11,9 @@ class DjangoTestCase(unittest.TestCase):
 
     def test_(self):
         from antd_admin.loader import Compiler
-        # from user.models import Role
+        # apps.get_app_config()
+        from user.models import Role
+        # print(Role._meta.app_config)
         # print(Role.__dict__)
         # return
         loader = Compiler()

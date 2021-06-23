@@ -15,17 +15,14 @@ interface BasicFormProps {
   dispatch: Dispatch;
 }
 
-{% for field in model.fields.values() %}
-    {% if field.type in ["ForeignKey", "ManyToManyField"] %}
-        import {  } from '@pages/{[ field.to.app_config.name ]}/{[ model.name ]}/service.ts'
-    {% endif %}
-{% endfor %}
+{%- for field in model.fields.values() %}
+    {%- if field.type in ["ForeignKey", "ManyToManyField"] %}
+        import { query{[ field.to.__name__ | capitalize ]} } from '@/pages/{[ field.to._meta.app_config.name ]}/{[ field.to.__name__.lower() ]}/service.ts'
+    {%- endif %}
+{%- endfor %}
+import { create{[ model.name | capitalize ]} } from './service'
 
-const BasicForm: FC<BasicFormProps> = (props) => {
-  const { submitting } = props;
-  const [form] = Form.useForm();
-  const [showPublicUsers, setShowPublicUsers] = React.useState(false);
-  const formItemLayout = {
+const formItemLayout = {
     labelCol: {
       xs: {
         span: 24,
@@ -59,47 +56,46 @@ const BasicForm: FC<BasicFormProps> = (props) => {
     },
   };
 
-{#  外键、多对多类型的，通过接口生成Options，多对多支持多选，todo，前端的最佳做法是MVC分层，不采用ant design当下按模块分的方式  #}
-
-  {%- for field in model.fields.values() %}
+class BasicForm extends React.Component<BasicFormProps> {
+  constructor(props) {
+    super(props);
+  this.state = {
+    {%- for field in model.fields.values() %}
       {%- if field.type in ["ForeignKey", "ManyToManyField"] %}
-          let {[ field.name ]}Options = []
+          {[ field.name ]}Options: [],
       {% endif %}
-  {%- endfor %}
+    {%- endfor %}
+    }
+  }
 
-  const onFinish = (values: Record<string, any>) => {
-    const { dispatch } = props;
-    dispatch({
-      type: 'formAndbasicForm/submitRegularForm',
-      payload: values,
-    });
-  };
+  componentDidMount() {
+    {%- for field in model.fields.values() %}
+      {%- if field.type in ["ForeignKey", "ManyToManyField"] %}
+          query{[ field.to.__name__ | capitalize ]}().then(resp=>{
+            this.setState({
+                {[ field.name ]}Options: resp.elements
+            });
+          })
+      {% endif %}
+    {%- endfor %}
+  }
 
-  const onFinishFailed = (errorInfo: any) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
-  };
+onFinish(values){
+    console.log('-----> 表单', values)
+    create{[ model.name | capitalize ]}(values).then(resp=>{
 
-  const onValuesChange = (changedValues: Record<string, any>) => {
-    const { publicType } = changedValues;
-    if (publicType) setShowPublicUsers(publicType === '2');
-  };
+    })
+  }
 
-  return (
+    render(){
+   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <Card bordered={false}>
         <Form
           style={{
             marginTop: 8,
           }}
-          form={form}
-          name="basic"
-          initialValues={{
-            public: '1',
-          }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          onValuesChange={onValuesChange}
+                  onFinish={this.onFinish}
         >
         {%- for field in model.fields.values() %}
             {%- if field.auto_now or field.auto_now_add or field.auto_created or field.is_primary_key %}
@@ -203,8 +199,12 @@ const BasicForm: FC<BasicFormProps> = (props) => {
                 max: {[ field.max_length ]}
             {%- endif -%}}] }
             >
-            <Select defaultValue="lucy" style={{ width: 120 }} >
-                <Option value="jack">Jack</Option>
+            <Select style={{ width: 120 }} >
+                {
+                    this.state.{[ field.name ]}Options.map(item => {
+                        return <Option key={item.id} value={item.id}>{ item.obj_ }</Option>
+                    })
+                }
             </Select>
           </FormItem>
         {%- elif field.type in ['ManyToManyField', ] %}
@@ -216,13 +216,16 @@ const BasicForm: FC<BasicFormProps> = (props) => {
             {%- if field.blank -%}
                 required: true,
             {%- endif -%}
-                type: "{[ field.type | django_convert_typescript ]}",
             {%- if field.max_length -%}
                 max: {[ field.max_length ]}
             {%- endif -%}}] }
           >
-            <Select defaultValue="lucy" style={{ width: 120 }} >
-                <Option value="jack">Jack</Option>
+            <Select style={{ width: 120 }} >
+                {
+                    this.state.{[ field.name ]}Options.map(item => {
+                        return <Option key={item.id} value={item.id}>{ item.obj_ }</Option>
+                    })
+                }
             </Select>
           </FormItem>
         {%- endif %}
@@ -231,7 +234,7 @@ const BasicForm: FC<BasicFormProps> = (props) => {
             {...submitFormLayout}
             style={{ marginTop: 32 }}
           >
-            <Button type="primary" htmlType="submit" loading={submitting}>
+            <Button type="primary" htmlType="submit" loading={this.submitting}>
               提交
             </Button>
             <Button
@@ -246,6 +249,9 @@ const BasicForm: FC<BasicFormProps> = (props) => {
       </Card>
     </PageContainer>
   );
+    }
+
+
 };
 
 export default connect(

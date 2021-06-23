@@ -8,6 +8,9 @@ class Permission(BaseModel):
         verbose_name="上级权限", to="self", on_delete=models.CASCADE, null=True, blank=True
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = "权限"
         verbose_name_plural = verbose_name
@@ -19,6 +22,9 @@ class Role(BaseModel):
         verbose_name="上级角色", to="self", on_delete=models.CASCADE, null=True, blank=True
     )
     permissions = models.ManyToManyField(verbose_name="权限集", to=Permission, blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         verbose_name = "角色"
@@ -57,6 +63,9 @@ class User(BaseModel):
         verbose_name="钱包", default=0, max_digits=10, decimal_places=2
     )
     married = models.BooleanField(verbose_name="是否结婚", default=False)
+
+    def __str__(self):
+        return self.nickname
 
     class Meta:
         verbose_name = "用户"

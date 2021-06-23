@@ -25,7 +25,7 @@ class RoleViewSet(ModelViewSet):
         pass
 
     def create(self, request, *args, **kwargs):
-        pass
+        return super(RoleViewSet, self).create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         return super(RoleViewSet, self).destroy(request, *args, **kwargs)
