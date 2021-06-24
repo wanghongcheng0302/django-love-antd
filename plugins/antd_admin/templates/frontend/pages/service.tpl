@@ -17,3 +17,18 @@ export async function create{[ model.name | capitalize ]}(data) {
   });
 }
 
+// {[ model.label ]}详情
+export async function detail{[ model.name | capitalize ]}(pk) {
+  return request(`/api/backend/{[ app_name ]}/{[ model.name ]}/${pk}/`, {
+    method: 'GET',
+  });
+}
+
+// {[ model.label ]}更新
+export async function update{[ model.name | capitalize ]}(pk, data) {
+  return request(`/api/backend/{[ app_name ]}/{[ model.name ]}/${pk}/`, {
+    method: 'PUT',
+    data,
+  });
+}
+

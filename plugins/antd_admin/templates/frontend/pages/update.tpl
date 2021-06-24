@@ -21,7 +21,7 @@ interface BasicFormProps {
         import { query{[ field.to.__name__ | capitalize ]} } from '@/pages/{[ field.to._meta.app_config.name ]}/{[ field.to.__name__.lower() ]}/service.ts'
     {%- endif %}
 {%- endfor %}
-import { create{[ model.name | capitalize ]} } from './service'
+import { update{[ model.name | capitalize ]}, detail{[ model.name | capitalize ]} } from './service'
 
 const formItemLayout = {
     labelCol: {
@@ -66,6 +66,7 @@ class BasicForm extends React.Component<BasicFormProps> {
           {[ field.name ]}Options: [],
       {% endif %}
     {%- endfor %}
+    formData:{id:this.props.location.query.id},
     }
   }
 
@@ -79,13 +80,24 @@ class BasicForm extends React.Component<BasicFormProps> {
           })
       {% endif %}
     {%- endfor %}
+    console.log(this.props.location.query)
+
+    detail{[ model.name | capitalize ]}(this.state.formData.id).then(resp=>{
+        if (resp.rc === 200) {
+        this.setState({
+          formData: resp.fields
+        })
+      }
+      this.refs['form'].setFieldsValue(this.state.formData)
+    })
   }
 
 onFinish(values){
     console.log('-----> 表单', values)
-    create{[ model.name | capitalize ]}(values).then(resp=>{
-        if(resp.rc === 201){
-            message.success('创建成功');
+    const pk = values.id
+    update{[ model.name | capitalize ]}(pk, values).then(resp=>{
+        if(resp.rc === 200){
+            message.success('更新成功');
             setTimeout(()=>{
               history.push({
               pathname: '/antd/{[ app_name ]}/{[ model.name ]}/list',
@@ -99,11 +111,12 @@ onFinish(values){
    return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <Card bordered={false}>
-        <Form
+        <Form ref='form'
           style={{
             marginTop: 8,
           }}
-                  onFinish={this.onFinish}
+                  onFinish={(values)=>{this.onFinish({...this.state.formData, ...values})}}
+              ref='form'
         >
         {%- for field in model.fields.values() %}
             {%- if field.auto_now or field.auto_now_add or field.auto_created or field.is_primary_key %}

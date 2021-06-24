@@ -39,6 +39,9 @@ class {[ model.classname ]}UpdateSerializer(serializers.ModelSerializer):
 
 
 class {[ model.classname ]}DetailSerializer(serializers.ModelSerializer):
+    obj_ = serializers.SerializerMethodField()
+    def get_obj_(self, obj):
+        return str(obj)
     class Meta:
         fields = '__all__'
         model = {[ model.classname ]}

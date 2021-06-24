@@ -31,6 +31,9 @@ class PermissionUpdateSerializer(serializers.ModelSerializer):
 
 
 class PermissionDetailSerializer(serializers.ModelSerializer):
+    obj_ = serializers.SerializerMethodField()
+    def get_obj_(self, obj):
+        return str(obj)
     class Meta:
         fields = '__all__'
         model = Permission
