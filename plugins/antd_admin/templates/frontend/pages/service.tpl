@@ -32,3 +32,9 @@ export async function update{[ model.name | capitalize ]}(pk, data) {
   });
 }
 
+// {[ model.label ]}删除
+export async function delete{[ model.name | capitalize ]}(pk) {
+  return request(`/api/backend/{[ app_name ]}/{[ model.name ]}/${pk}/`, {
+    method: 'DELETE',
+  });
+}

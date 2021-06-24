@@ -1,14 +1,12 @@
 import React from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {TableListItem} from './data'
-import {Button, Popconfirm} from 'antd';
-import {query{[ model.name | capitalize ]}} from './service'
+import {Button, Popconfirm, message} from 'antd';
+import {query{[ model.name | capitalize ]}, delete{[ model.name | capitalize ]}} from './service'
 import {Table, Tag, Space} from 'antd';
 import ProTable from '@ant-design/pro-table';
 import {history} from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-
-
 
 
 class TableList extends React.Component {
@@ -32,7 +30,13 @@ handelDetail(record) {
   }
 
   handelDelete(record) {
-
+    delete{[ model.name | capitalize ]}(record.id).then(resp=>{
+        message.success('删除成功');
+            this.setState({
+                dataSource: [],
+            });
+            this.getList()
+    })
   }
 
 columns = [

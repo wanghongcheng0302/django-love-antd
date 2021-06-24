@@ -71,6 +71,20 @@ const request = extend({
   }
 });
 
+request.interceptors.request.use(async (url, options) => {
+  const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': localStorage.getItem('token')
+    };
+  return (
+    {
+      url: url,
+      options: { ...options, headers: headers },
+    }
+  )
+})
+
 // request.interceptors.response.use(async response => {
 //   const data = await response.clone().json()
 //   console.log('response', data)
