@@ -1,0 +1,185 @@
+[
+  {
+    "path": "/",
+    "component": "../layouts/BlankLayout",
+    "routes": [
+      {
+        "path": "/user",
+        "component": "../layouts/UserLayout",
+        "routes": [
+          {
+            "path": "/user/login",
+            "name": "login",
+            "component": "./User/login"
+          },
+          {
+            "path": "/user",
+            "redirect": "/user/login"
+          },
+          {
+            "component": "404"
+          }
+        ]
+      },
+      {
+        "path": "/",
+        "component": "../layouts/BasicLayout",
+        "Routes": [
+          "src/pages/Authorized"
+        ],
+        "authority": [
+          "admin",
+          "user"
+        ],
+        "routes": [
+          {
+            "path": "/",
+            "redirect": "/admin/role/list"
+          },
+          {
+            "path": "/admin",
+            "icon": "form",
+            "name": "权限中心",
+            "authority": [
+              "superuser"
+            ],
+            "routes": [
+              {
+                "name": "权限管理",
+                "path": "/admin/permission/list",
+                "component": "./_admin/permission",
+                "hideInMenu": true
+              },
+              {
+                "name": "创建权限",
+                "path": "/admin/permission/create",
+                "component": "./_admin/permission/create",
+                "hideInMenu": true
+              },
+              {
+                "name": "编辑权限",
+                "path": "/admin/permission/update",
+                "component": "./_admin/permission/update",
+                "hideInMenu": true
+              },
+              {
+                "name": "权限详情",
+                "path": "/admin/permission/detail",
+                "component": "./_admin/permission/detail",
+                "hideInMenu": true
+              },
+              {
+                "name": "角色管理",
+                "path": "/admin/role/list",
+                "component": "./_admin/role"
+              },
+              {
+                "name": "创建角色",
+                "path": "/admin/role/create",
+                "component": "./_admin/role/create",
+                "hideInMenu": true
+              },
+              {
+                "name": "编辑角色",
+                "path": "/admin/role/update",
+                "component": "./_admin/role/update",
+                "hideInMenu": true
+              },
+              {
+                "name": "角色详情",
+                "path": "/admin/role/detail",
+                "component": "./_admin/role/detail",
+                "hideInMenu": true
+              },
+              {
+                "name": "用户管理",
+                "path": "/admin/user/list",
+                "component": "./_admin/user"
+              },
+              {
+                "name": "创建用户",
+                "path": "/admin/user/create",
+                "component": "./_admin/user/create",
+                "hideInMenu": true
+              },
+              {
+                "name": "编辑用户",
+                "path": "/admin/user/update",
+                "component": "./_admin/user/update",
+                "hideInMenu": true
+              },
+              {
+                "name": "用户详情",
+                "path": "/admin/user/detail",
+                "component": "./_admin/user/detail",
+                "hideInMenu": true
+              },
+              {
+                "name": "权限控制",
+                "path": "/admin/casbin/list",
+                "component": "./_admin/casbin"
+              }
+            ]
+          },
+          {
+            "name": "exception",
+            "icon": "warning",
+            "path": "/exception",
+            "hideInMenu": true,
+            "routes": [
+              {
+                "path": "/",
+                "redirect": "/exception/403"
+              },
+              {
+                "name": "403",
+                "icon": "smile",
+                "path": "/exception/403",
+                "component": "./exception/403"
+              },
+              {
+                "name": "404",
+                "icon": "smile",
+                "path": "/exception/404",
+                "component": "./exception/404"
+              },
+              {
+                "name": "500",
+                "icon": "smile",
+                "path": "/exception/500",
+                "component": "./exception/500"
+              }
+            ]
+          },
+          {
+            "name": "account",
+            "icon": "user",
+            "path": "/account",
+            "hideInMenu": true,
+            "routes": [
+              {
+                "path": "/",
+                "redirect": "/account/center"
+              },
+              {
+                "name": "center",
+                "icon": "smile",
+                "path": "/account/center",
+                "component": "./account/center"
+              },
+              {
+                "name": "settings",
+                "icon": "smile",
+                "path": "/account/settings",
+                "component": "./account/settings"
+              }
+            ]
+          },
+          {
+            "component": "404"
+          }
+        ]
+      }
+    ]
+  }
+]

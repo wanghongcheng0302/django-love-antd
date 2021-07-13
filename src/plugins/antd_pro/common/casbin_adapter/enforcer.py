@@ -1,0 +1,68 @@
+# from django.conf import settings
+from antd_pro.settings import settings
+from django.db import connection
+from django.db.utils import OperationalError, ProgrammingError
+from casbin import Enforcer
+from .utils import import_class
+
+
+class ProxyEnforcer(Enforcer):
+    _initialized = False
+
+    def __init__(self, *args, **kwargs):
+        if self._initialized:
+            super().__init__(*args, **kwargs)
+        else:
+            print('Deferring casbin enforcer initialisation until django is ready')
+
+    def _load(self):
+        if self._initialized == False:
+            print('Performing deferred casbin enforcer initialisation')
+            self._initialized = True
+            model = getattr(settings, 'ANTD_CASBIN_MODEL')
+            adapter_loc = getattr(settings, 'CASBIN_ADAPTER', 'antd_pro.common.casbin_adapter.adapter.Adapter')
+            adapter_args = getattr(settings, 'CASBIN_ADAPTER_ARGS', tuple())
+            Adapter = import_class(adapter_loc)
+            adapter = Adapter(*adapter_args)
+
+            super().__init__(model, adapter)
+            print('Casbin enforcer initialised')
+
+            watcher = getattr(settings, 'CASBIN_WATCHER', None)
+            if watcher:
+                self.set_watcher(watcher)
+
+            role_manager = getattr(settings, 'CASBIN_ROLE_MANAGER', None)
+            if role_manager:
+                self.set_role_manager(role_manager)
+
+    def __getattribute__(self, name):
+        safe_methods = ['__init__', '_load', '_initialized']
+        if not super().__getattribute__('_initialized') and name not in safe_methods:
+            initialize_enforcer()
+            if not super().__getattribute__('_initialized'):
+                raise Exception((
+                    "Calling enforcer attributes before django registry is ready. "
+                    "Prevent making any calls to the enforcer on import/startup"
+                ))
+
+        return super().__getattribute__(name)
+
+
+enforcer = ProxyEnforcer()
+
+
+def initialize_enforcer():
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT app, name applied FROM django_migrations
+                WHERE app = 'casbin_adapter' AND name = '0001_initial';
+                """
+            )
+            row = cursor.fetchone()
+            if row:
+                enforcer._load()
+    except (OperationalError, ProgrammingError):
+        pass

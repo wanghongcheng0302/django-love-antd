@@ -1,0 +1,11 @@
+.idea
+db.sqlite3
+**/*.log
+**/node_modules
+**/dist
+**/build
+**/__pycache__
+conf/*.pem
+Pipfile.lock
+Pipfile
+var/bak
